@@ -1,0 +1,44 @@
+.header {
+    padding: 1rem 0 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    // border: 1px solid black;
+}
+
+.title {
+    color: #000000;
+    font-size: 5rem;
+    text-decoration: none;
+}
+
+.title:hover{
+    color: black
+}
+
+.navList {
+    // border: 1px solid black;
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+}
+
+.navItem {
+    color: #999999;
+    font-size: .9rem;
+    margin-right: 1.3rem;
+    text-decoration: none;
+}
+
+.navItem:hover {
+    color: #666666;
+}
+
+.activeNavItem {
+    color: #333333;
+}
+
+.navWhole {
+    display: flex;
+    justify-content: space-between;
+}
