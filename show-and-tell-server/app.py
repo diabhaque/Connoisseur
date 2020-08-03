@@ -9,7 +9,6 @@ from werkzeug.utils import secure_filename
 import tensorflow as tf
 import json
 import re
-from torchvision.transforms import ToTensor
 import matplotlib.pyplot as plt
 import numpy as np
 from tensorflow.keras import datasets, layers, models
@@ -21,7 +20,6 @@ import pickle
 
 top_k = 5000
 BATCH_SIZE = 64
-BUFFER_SIZE = 1000
 embedding_dim = 256
 units = 512
 vocab_size = top_k + 1
@@ -116,7 +114,7 @@ encoder=tf.keras.models.load_model('./encoder')
 
 decoder = RNN_Decoder(embedding_dim, units, vocab_size)
 
-decoder.load_weights('./save/my_save')
+decoder.load_weights('./decoder/decoder_weights')
 
 with open('tokenizer.pickle', 'rb') as handle:
     tokenizer = pickle.load(handle)
@@ -159,39 +157,86 @@ def predict():
     img_tensor_val = tf.reshape(img_tensor_val, (img_tensor_val.shape[0], -1, img_tensor_val.shape[3]))
     features = encoder(img_tensor_val)
 
-    dec_input = tf.expand_dims([tokenizer.word_index['<start>']], 0)
-    result = []
+    # dec_input = tf.expand_dims([tokenizer.word_index['<start>']], 0)
+    dec_in = tf.expand_dims([tokenizer.word_index['<start>']], 0)
 
-    beam_index=3
+    # for i in range(48):
+    #     predictions, hidden, _ = decoder(dec_input, features, hidden)
+
+    #     predicted_id = tf.random.categorical(predictions, 1)[0][0].numpy()
+    #     if tokenizer.index_word[predicted_id] == '<end>':
+    #         break
+
+    #     result.append(tokenizer.index_word[predicted_id])
+
+    #     dec_input = tf.expand_dims([predicted_id], 0)
+
+#     BEAM SEARCH STARTS HERE
     
-    sequences=[[[], 0.0]]
+    beam_index=3
+
+    predictions, hidden, _ = decoder(dec_in, features, hidden)
+    word_preds=np.argsort(predictions[0])[-beam_index:]
+    word_probs=np.sort(predictions[0])[-beam_index:]
+
+    sequences=[[[word_preds[0]], np.log(predictions[0][word_preds[0]]), hidden], [[word_preds[1]], np.log(predictions[0][word_preds[1]]), hidden], [[word_preds[2]], np.log(predictions[0][word_preds[2]]), hidden]]
+#     print(tokenizer.index_word[sequences[0][0][0]], tokenizer.index_word[sequences[1][0][0]],tokenizer.index_word[sequences[2][0][0]])
+    stop=False
 
     for i in range(50):
-        all_candidates=list()
+        temp=[]
         for s in sequences:
-            predictions, hidden, _ = decoder(dec_input, features, hidden)
-            # word_preds=np.argsort(predictions[0])[-beam_index:]
-
-            # for w in word_preds:
-            #     next_cap, prob=s[0][:], s[1]
-            #     next_cap.append(w)
-            #     prob += preds[0][w]
-            #     temp.append([next_cap, prob])
-
-            # if(i<2):
-            #     print(temp)
-
-            predicted_id = tf.random.categorical(predictions, 1)[0][0].numpy()
+            dec_in = tf.expand_dims([s[0][-1]], 0)
+            predictions, hidden, _ = decoder(dec_in, features, s[2])
+            word_preds=np.argsort(predictions[0])[-beam_index:]
+            divider=len(s[0])+1
             
-            if tokenizer.index_word[predicted_id] == '<end>':
+            tempSeq0=[np.append(s[0], word_preds[0]), (s[1]+np.log(predictions[0][word_preds[0]]))/divider, hidden]
+            tempSeq1=[np.append(s[0], word_preds[1]), (s[1]+np.log(predictions[0][word_preds[1]]))/divider, hidden]
+            tempSeq2=[np.append(s[0], word_preds[2]), (s[1]+np.log(predictions[0][word_preds[2]]))/divider, hidden]
+            
+            temp.append(tempSeq0)
+            temp.append(tempSeq1)
+            temp.append(tempSeq2)
+
+        sequences=temp
+        sequences=sorted(sequences, reverse=False, key=lambda l: l[1])
+
+        sequences=sequences[-beam_index:]
+        # print(f"Start {i}th")
+        # lastOut0=[]
+        # lastOut1=[]
+        lastOut2=[]
+        # for x in sequences[0][0]:
+        #     if x==4:
+        #         break
+        #     lastOut0.append(tokenizer.index_word[x])
+            
+        # for x in sequences[1][0]:
+        #     if x==4:
+        #         break
+        #     lastOut1.append(tokenizer.index_word[x])
+            
+        for x in sequences[2][0]:
+            if x==4:
+                stop=True
                 break
-            
-            result.append(tokenizer.index_word[predicted_id])
+            lastOut2.append(tokenizer.index_word[x])
+        
+        # print(lastOut0, sequences[0][1])
+        # print(lastOut1, sequences[1][1])
+        # print(lastOut2, sequences[2][1])
+    
+        
+        if(stop):
+            break
 
-            dec_input = tf.expand_dims([predicted_id], 0)
+
+
+
 
     response={
-        "res": ' '.join(result),
+        "res": ' '.join(lastOut2)
     }
 
     return jsonify(response)
