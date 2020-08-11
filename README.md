@@ -1,4 +1,4 @@
-# Show & Tell
+# Connoisseur
 
 An image captioning application, able to accurately describe your photos
 
