@@ -1,25 +1,41 @@
 # Connoisseur
 
-Connoisseur is a one stop shop where you get to see the wonders of modern Image Captioning technology.
-"Calculus isn't useful", you say. Well, tell that to the Backprop that made this possible.
-And also Attention Model. And the Inception Embeddings. And the GRUs. And the tokenizer.
+This project was the culmination of my work with Convolutional Neural Networks and Sequence Models, allowing me to apply a lot of the technologies I had learned through the <a href="https://www.coursera.org/specializations/deep-learning">"Deep Learning Specialization"</a> on Coursera, taught by Andrew Ng.
+
+The application is able automatically describe the content of images. To do this, it had to be capable of prerceiving contextual subtleties in images, and to relate observations to both the scene and the real world.
+
+<img src="./Images/skifull.png">
+
+## Data Overview
+
+The dataseet used contained ~400,000 captions on ~80,000 and corresponding captions in the MS-COCO dataset. i.e each image have 5 correspondinf captions. 
+
+**Data Preprocessing:**
+<br>
+The images (*.jpeg or *.png) were passed through a Fine Tuned InceptionV3 (pretrained on imagenet) model and converted to 8 by 8 by 2048 numpy matrices 
+
+The text was tokenized using the Keras.preprocessing.text.Tokenizer
 
 ## Model
 
-Built with Tensorflow and Keras, trained on the ~400,000 captions on ~80,000 and corresponding captions in the MS-COCO dataset. 
+The model architecture was inspired by the <a herf="Show, Attend and Tell">Show, Attend and Tell</a> paper by Xu et al. (2015)
 
-Created custom Attention model, RNN model, and CNN embedder
+* The embedded image vector is passed through a CNN encoder
+* The RNN decoder then takes the image as input and uses Bahdanau's Attention Model to generate a context that is continuously fed (along with an input word) into a GRU to create a sequence of words that would describe the image.
 
-Details:
+## Prediction
 
-* Images encoded with InceptionV3
-* Passed through 
-*
+    The base 64 image is first converted to a tensor adn passed through the image_features_extract_model() function, i.e, the InceptionV3 model.
 
-## Backend
+<img src="./Images/processInput.png">
 
-Flask 
+    The caption is then sequentially generated using Beam Search (An optimization of best-first search) of width three. This significantly improves the accuracy of the output caption.
 
-## Fronted
+<img src="./Images/beamSearch.png">
 
-React
+    The following image provides a visual representation of how the model works.
+<img src="./Images/attentionVisualization.png">
+
+## Future Work/ Improvements:
+
+TBC...

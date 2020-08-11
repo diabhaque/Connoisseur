@@ -232,8 +232,11 @@ def predict():
             break
 
 
+
+
+
     response={
-        "res": "A person in orange clothes skiing down a hill"
+        "res": ' '.join(lastOut2)
     }
 
     return jsonify(response)
