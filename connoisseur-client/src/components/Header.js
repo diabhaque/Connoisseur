@@ -9,7 +9,7 @@ const Header = () => {
     <header className={headerStyles.header}>
       <h1>
         <NavLink className={headerStyles.title} to="/show_tell">
-          Show & Tell
+          Connoisseur
         </NavLink>
       </h1>
       <nav>
