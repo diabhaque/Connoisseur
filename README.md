@@ -8,11 +8,11 @@ The application is able automatically describe the content of images. To do this
 
 ## Data Overview
 
-The dataseet used contained ~400,000 captions on ~80,000 and corresponding captions in the MS-COCO dataset. i.e each image have 5 correspondinf captions. 
+The MS-COCO dataset used contained ~400,000 captions on ~80,000 images and corresponding captions, i.e each image has 5 corresponding captions. 
 
 **Data Preprocessing:**
 <br>
-The images (*.jpeg or *.png) were passed through a Fine Tuned InceptionV3 (pretrained on imagenet) model and converted to 8 by 8 by 2048 numpy matrices 
+The images (*.jpeg or *.png) were passed through a Fine Tuned InceptionV3 (pretrained on imagenet) model and converted to an 8 by 8 by 2048 numpy matrices 
 
 The text was tokenized using the Keras.preprocessing.text.Tokenizer
 
@@ -21,11 +21,11 @@ The text was tokenized using the Keras.preprocessing.text.Tokenizer
 The model architecture was inspired by the <a herf="Show, Attend and Tell">Show, Attend and Tell</a> paper by Xu et al. (2015)
 
 * The embedded image vector is passed through a CNN encoder
-* The RNN decoder then takes the image as input and uses Bahdanau's Attention Model to generate a context that is continuously fed (along with an input word) into a GRU to create a sequence of words that would describe the image.
+* The RNN decoder then takes the image as input and uses Bahdanau's Attention Model to generate a context that is continuously fed (along with an embedded input word) into a GRU to create a sequence of words that would describe the image.
 
 ## Prediction
 
-    The base 64 image is first converted to a tensor adn passed through the image_features_extract_model() function, i.e, the InceptionV3 model.
+    The base 64 image is first converted to a tensor and passed through the image_features_extract_model() function, i.e, the InceptionV3 model.
 
 <img src="./Images/processInput.png">
 
