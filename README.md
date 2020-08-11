@@ -8,7 +8,7 @@ The application is able automatically describe the content of images. To do this
 
 ## Data Overview
 
-The MS-COCO dataset used contained ~400,000 captions on ~80,000 images and corresponding captions, i.e each image has 5 corresponding captions. 
+The MS-COCO dataset contained ~400,000 captions and ~80,000 images, i.e each image has 5 corresponding captions. 
 
 **Data Preprocessing:**
 <br>
