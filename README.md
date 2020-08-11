@@ -1,6 +1,8 @@
 # Connoisseur
 
-An image captioning application, able to accurately describe your photos
+Connoisseur is a one stop shop where you get to see the wonders of modern Image Captioning technology.
+"Calculus isn't useful", you say. Well, tell that to the Backprop that made this possible.
+And also Attention Model. And the Inception Embeddings. And the GRUs. And the tokenizer.
 
 ## Model
 
