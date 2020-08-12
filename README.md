@@ -38,4 +38,4 @@ The model architecture was inspired by the <a herf="Show, Attend and Tell">Show,
 
 ## Future Work/ Improvements:
 
-* Add section for users to submit actual captions (vs generated ones) and add code for public learning.
+* Add section for users to submit actual captions (vs generated ones) and add code for an online iterative learning pipeline.
